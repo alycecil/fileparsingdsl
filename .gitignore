@@ -1,7 +1,14 @@
 *.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# IntelliJ #
+.idea
+*.iml
+.target
+target
+
+# jFlex (generated sources) #
+src/main/generated
+src/main/generated-sources
 
 # Package Files #
 *.jar
