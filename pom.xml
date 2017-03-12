@@ -9,15 +9,51 @@
     <version>0.1-SNAPSHOT</version>
 
     <properties>
-        <!-- Compatibility with existing world of work -->
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
+        <groovy.version>2.4.9</groovy.version>
     </properties>
+
+    <dependencies>
+
+        <!-- going to add jackson databind when i actually am forced to -->
+
+        <!-- the all important testing lib -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Groovy is best language for unit tests -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 
 
     <build>
         <plugins>
 
-            <!-- _the_ plugin -->
+            <!-- Groovy Compiler, for tests -->
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- basically required, the java compiler for prod -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -27,7 +63,7 @@
                 </configuration>
             </plugin>
 
-            <!-- LEXER -->
+            <!-- Lexer code gen. -->
             <plugin>
                 <groupId>de.jflex</groupId>
                 <artifactId>jflex-maven-plugin</artifactId>
