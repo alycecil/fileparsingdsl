@@ -19,9 +19,12 @@ public class GeneratedLexerTest {
         def tokens = []
 
         def next = Token.StartToken;
-        for( ; next!=null ;next = lexer.next){
+        while(next!=null){
+            next = lexer.next
             tokens << next
         }
+
+
 
         tokens.each {
             Token t ->

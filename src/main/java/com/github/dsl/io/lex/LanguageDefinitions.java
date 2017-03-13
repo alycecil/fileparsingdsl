@@ -11,6 +11,7 @@ public enum LanguageDefinitions {
 	LOGIC_END(")"),
 
 	IO_START("["),
+	IOSeparatorArrow("->"),
 	IO_END("]"),
 
 	IDENTITY,

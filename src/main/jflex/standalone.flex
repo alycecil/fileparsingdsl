@@ -52,9 +52,11 @@ EscapedCharacter = \\{InputCharacter}
 
 LineComment = {WhiteSpace}* "#" .*
 
-Identifier = [:jletterdigit:]+
-IdentifierReference = \{ {Identifier} \}
-Literal = \'{Identifier}\'
+ALPHA=[A-Za-z]
+DIGIT=[0-9]
+
+NUMBERS = DIGIT+
+VALUES = NUMBERS | ALPHA
 
 LogicSeparator = \(
 LogicSeparatorEnd = \)
@@ -68,20 +70,18 @@ IOSeparatorEnd = \]
 
 
 
-<YYINITIAL> {
-    {IOSeparator}           {
-            yybegin(IO_SEGMENT);
-
-            return token(LanguageDefinitions.IO_START); }
-
-    {LogicSeparator}        { yybegin(LOGIC_SEGMENT);
-            return token(LanguageDefinitions.LOGIC_START); }
-
-    {AnySpace}+             |
-    .+                      { /* Ignore the bulk text as thats not code */}
-}
 
 
+
+
+{IOSeparator}           {
+        yybegin(IO_SEGMENT);
+
+        return token(LanguageDefinitions.IO_START); }
+
+
+
+{AnySpace}+             {/*WHITE SPACE YAHI!*/}
 
 <IO_SEGMENT> {
     <IO_SEGMENT_AFTER_ARROW> {
@@ -95,12 +95,9 @@ IOSeparatorEnd = \]
     {Identifier}            { return token(LanguageDefinitions.IDENTITY); }
 
     {IOSeparatorArrow}      { yybegin(IO_SEGMENT_AFTER_ARROW);
-            return token(LanguageDefinitions.NOP);}
+            return token(LanguageDefinitions.IOSeparatorArrow);}
 
-    .+                      { /* Unmatched Text in code block? */
-        return token(LanguageDefinitions.NOP);}
-
-
+    "," {return token(LanguageDefinitions.NOP);}
 }
 
 
@@ -114,7 +111,8 @@ IOSeparatorEnd = \]
             return token(LanguageDefinitions.NOP);}
 }
 
-
+{LogicSeparator}        { yybegin(LOGIC_SEGMENT);
+        return token(LanguageDefinitions.LOGIC_START); }
 
 
 
