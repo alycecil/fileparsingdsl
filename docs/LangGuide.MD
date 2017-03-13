@@ -27,6 +27,7 @@ Depending on your file source, your fields will be more than likely read as a st
 ## `{Input Location}`
 
 ### FOR FIXED WIDTH FILES
+
 [X] TODO
 [ ] DONE
 
@@ -41,6 +42,7 @@ By field length
 
 
 ### FOR CSV
+
 [X] TODO
 [ ] DONE
 
@@ -50,6 +52,7 @@ By Ones indexed positions
 
 
 ### FOR EXCEL
+
 [X] TODO
 [ ] DONE
 
@@ -65,6 +68,7 @@ By Ones indexed positions
 
 
 ### FOR XML
+
 [X] TODO
 [ ] DONE
 
@@ -88,6 +92,7 @@ root record path
 ```
 
 ### FOR JSON
+
 [X] TODO
 [ ] DONE
 
@@ -103,6 +108,7 @@ root record path
 ```
 
 ## `->` Operator
+
 [ ] TODO
 [X] DONE
 
