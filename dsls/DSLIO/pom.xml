@@ -37,7 +37,18 @@
 
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>${plugin.version.gmavenplus}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
+
 
             <!-- Groovy Compiler, for tests -->
             <plugin>
@@ -47,6 +58,7 @@
                 <executions>
                     <execution>
                         <goals>
+                            <goal>addTestSources</goal>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
@@ -59,8 +71,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${plugin.version.manvencompiler}</version>
                 <configuration>
-                    <target>${java.version}</target>
+                    <target>1.7</target>
                     <generatedSourcesDirectory>src/main/generated-sources</generatedSourcesDirectory>
+                    <source>1.7</source>
                 </configuration>
             </plugin>
 
@@ -71,11 +84,16 @@
                 <version>1.6.1</version>
                 <executions>
                     <execution>
+                        <id>jflex</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/main/generated-sources</outputDirectory>
+                            <outputDirectory>src/main/groovy</outputDirectory>
+                            <lexDefinitions>
+                                <lexDefinition>src/main/jflex</lexDefinition>
+                            </lexDefinitions>
+                            <verbose>true</verbose>
                         </configuration>
                     </execution>
                 </executions>

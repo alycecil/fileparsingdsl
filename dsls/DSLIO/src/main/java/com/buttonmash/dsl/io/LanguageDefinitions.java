@@ -1,4 +1,4 @@
-package com.buttonmash.dsl.io.lex;
+package com.buttonmash.dsl.io;
 
 public enum LanguageDefinitions {
     IMPERATIVE("#!"),

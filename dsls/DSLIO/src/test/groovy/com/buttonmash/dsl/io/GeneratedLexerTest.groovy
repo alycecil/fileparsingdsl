@@ -1,6 +1,7 @@
-package com.buttonmash.dsl.io.lex
+package com.buttonmash.dsl.io
 
-import com.buttonmash.dsl.io.lex.generated.DSLLexer
+import com.buttonmash.dsl.io.generated.DSLLexer
+import static com.buttonmash.dsl.io.LanguageDefinitions.*;
 
 import static org.testng.Assert.*
 
@@ -23,6 +24,7 @@ public class GeneratedLexerTest {
             tokens << next
         }
 
+        println "Tokens "
 
 
         tokens.each {
@@ -30,6 +32,18 @@ public class GeneratedLexerTest {
                 println t
         }
 
+
+        if(expected instanceof List){
+            expected  = expected as List
+            assertEquals( tokens.size(), expected.size() )
+
+            def iter = expected.iterator()
+            tokens.each {
+               def  (type, value) = iter.next()
+
+                assertEquals(it.type,  type)
+            }
+        }
         fail('missing impl')
     }
 
@@ -38,7 +52,7 @@ public class GeneratedLexerTest {
         [
             [/Fixed Width Positional Simple/,
              /[1,10->A]/,
-            /* [IO_START, [IDENTITY,1], [IDENTITY,10], NOP, [IDENTITY,A], IO_END]*/ null
+             [[IO_START, 0], [LITERAL,1], [NOP, null],[LITERAL,10], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,0]]
             ],
         ] as Object[][]
     }
