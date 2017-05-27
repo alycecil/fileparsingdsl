@@ -1,4 +1,4 @@
-package com.buttonmash.dsl.io;
+package com.buttonmash.dsl.io.lex;
 
 public enum LogicKeywords {
     //NO-OPs

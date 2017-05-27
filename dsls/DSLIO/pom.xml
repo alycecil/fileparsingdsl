@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+
     <artifactId>dsl.io</artifactId>
     <version>0.1-SNAPSHOT</version>
 
@@ -29,7 +30,7 @@
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>${groovy.version}</version>
-            <scope>compile</scope>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -38,7 +39,7 @@
     <build>
         <plugins>
 
-            <!-- Groovy Compiler -->
+            <!-- Groovy Compiler, for tests -->
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
@@ -46,7 +47,6 @@
                 <executions>
                     <execution>
                         <goals>
-							<goal>compile</goal>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
@@ -64,6 +64,22 @@
                 </configuration>
             </plugin>
 
+            <!-- Lexer code gen. -->
+            <plugin>
+                <groupId>de.jflex</groupId>
+                <artifactId>jflex-maven-plugin</artifactId>
+                <version>1.6.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/generated-sources</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

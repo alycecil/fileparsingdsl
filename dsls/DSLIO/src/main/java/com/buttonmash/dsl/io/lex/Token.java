@@ -1,4 +1,4 @@
-package com.github.dsl.io.lex;
+package com.buttonmash.dsl.io.lex;
 
 import java.text.MessageFormat;
 

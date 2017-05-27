@@ -89,10 +89,7 @@ IOSeparatorEnd = \]
                 return token(LanguageDefinitions.IO_END);}
     }
 
-    {Literal}               { return token(LanguageDefinitions.LITERAL); }
-
-    {IdentifierReference}   |
-    {Identifier}            { return token(LanguageDefinitions.IDENTITY); }
+    {VALUES}               { return token(LanguageDefinitions.LITERAL); }
 
     {IOSeparatorArrow}      { yybegin(IO_SEGMENT_AFTER_ARROW);
             return token(LanguageDefinitions.IOSeparatorArrow);}
@@ -106,6 +103,8 @@ IOSeparatorEnd = \]
 <LOGIC_SEGMENT> {
     {LogicSeparatorEnd}     { yybegin(YYINITIAL);
             return token(LanguageDefinitions.LOGIC_END);}
+
+    {VALUES}               { return token(LanguageDefinitions.LITERAL); }
 
     .+                      { /* Unmatched Text in code block? */
             return token(LanguageDefinitions.NOP);}

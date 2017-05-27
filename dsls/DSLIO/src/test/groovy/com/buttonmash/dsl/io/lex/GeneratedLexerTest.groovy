@@ -1,9 +1,8 @@
-package com.github.dsl.io.lex
+package com.buttonmash.dsl.io.lex
 
-import com.github.dsl.io.lex.generated.DSLLexer
+import com.buttonmash.dsl.io.lex.generated.DSLLexer
 
 import static org.testng.Assert.*
-import static com.github.dsl.io.lex.LanguageDefinitions.*;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
