@@ -72,7 +72,6 @@
                 <version>${plugin.version.manvencompiler}</version>
                 <configuration>
                     <target>1.7</target>
-                    <generatedSourcesDirectory>src/main/generated-sources</generatedSourcesDirectory>
                     <source>1.7</source>
                 </configuration>
             </plugin>
@@ -89,7 +88,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/main/groovy</outputDirectory>
+                            <outputDirectory>src/main/java</outputDirectory>
                             <lexDefinitions>
                                 <lexDefinition>src/main/jflex</lexDefinition>
                             </lexDefinitions>

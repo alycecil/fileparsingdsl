@@ -1,5 +1,6 @@
 package com.buttonmash.dsl.io
 
+import com.buttonmash.dsl.io.generated.DSLLexer
 
 import static com.buttonmash.dsl.io.LanguageDefinitions.*;
 
@@ -39,12 +40,14 @@ public class GeneratedLexerTest {
 
             def iter = expected.iterator()
             tokens.each {
-               def  (type, value) = iter.next()
+                def nxt = iter.next()
+                if(nxt) {
+                    def (type, value) = nxt
 
-                assertEquals(it.type,  type)
+                    assertEquals(it.type, type)
+                }
             }
         }
-        fail('missing impl')
     }
 
     @DataProvider(name = "parserDataprovider")
