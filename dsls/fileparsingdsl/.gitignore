@@ -1,13 +1,14 @@
 *.class
 
-#Generated Sources
-src/main/generated-sources
-
 # IntelliJ #
 .idea
 *.iml
 .target
 target
+
+# jFlex (generated sources) #
+src/main/generated
+src/main/generated-sources
 
 # Package Files #
 *.jar

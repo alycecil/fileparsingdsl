@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>dsl.io</artifactId>
+    <version>0.1-SNAPSHOT</version>
+
+    <parent>
+        <groupId>com.buttonmash</groupId>
+        <artifactId>implementation-toolkit</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+
+        <!-- the all important testing lib -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Groovy is best language for unit tests -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${groovy.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+
+            <!-- Groovy Compiler -->
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>${plugin.version.gmavenplus}</version>
+                <executions>
+                    <execution>
+                        <goals>
+							<goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- basically required, the java compiler for prod -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${plugin.version.manvencompiler}</version>
+                <configuration>
+                    <target>${java.version}</target>
+                    <generatedSourcesDirectory>src/main/generated-sources</generatedSourcesDirectory>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
