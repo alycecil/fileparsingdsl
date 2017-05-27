@@ -57,6 +57,14 @@ public class GeneratedLexerTest {
              /[1,10->A]/,
              [[IO_START, 0], [LITERAL,1], [NOP, null],[LITERAL,10], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,0], null]
             ],
+            [/Fixed Width Positional 1/,
+             /[ 1 ,10 -> A ]/,
+             [[IO_START, 0], [LITERAL,1], [NOP, null],[LITERAL,10], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,0], null]
+            ],
+            [/Fixed Width Positional 1/,
+             " [ 1 , 10  -> A ] ",
+             [[IO_START, 0], [LITERAL,1], [NOP, null],[LITERAL,10], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,0], null]
+            ],
         ] as Object[][]
     }
 

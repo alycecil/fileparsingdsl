@@ -52,40 +52,62 @@ IOSeparatorArrow = =>|->
 IOSeparatorEnd = \]
 
 MethodHeader = @@
-CommentHeader = @
+OptionHeader = @
 
 IMPERATIVE = #\!
 COMMENT = #
 
-Identifier = [:jletter:] [:jletterdigit:]*
+Identifier = [:jletter:] ({WhiteSpace}|[:jletterdigit:])*[:jletterdigit:]*
 
  DecIntegerLiteral = 0 | [1-9][0-9]*
 
-%state USEFUL
+Literal = {DecIntegerLiteral}|'{Identifier}*'
+
+%state USEFUL, IO, LOGIC
 
 %%
 
 <YYINITIAL> {
-    {IOSeparator}           {yybegin(USEFUL); return token(LanguageDefinitions.IO_START); }
-    {LogicSeparator}        {yybegin(USEFUL);  return token(LanguageDefinitions.LOGIC_START); }
+    {IOSeparator}                   {yybegin(IO); return token(LanguageDefinitions.IO_START); }
+    {LogicSeparator}                {yybegin(LOGIC);  return token(LanguageDefinitions.LOGIC_START); }
+
+    {MethodHeader}                  {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
+
+    {OptionHeader}                 {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
+
+}
+
+<IO> {
+    {IOSeparatorArrow}              {return token(LanguageDefinitions.IOSeparatorArrow);}
+
+    {IOSeparatorEnd}                {yybegin(YYINITIAL); return token(LanguageDefinitions.IO_END);}
+
+    ","                             {return token(LanguageDefinitions.NOP);}
 
 
-    {AnySpace}+             {/*WHITE SPACE YAHI!*/}
+
+    {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
+    {Literal}                       {return token(LanguageDefinitions.LITERAL); }
+}
+
+<LOGIC> {
+    {LogicSeparatorEnd}             {yybegin(YYINITIAL); return token(LanguageDefinitions.LOGIC_END);}
+
+
+    {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
+    {Literal}                       { return token(LanguageDefinitions.LITERAL); }
 }
 
 <USEFUL> {
-    {IOSeparatorArrow}      { return token(LanguageDefinitions.IOSeparatorArrow);}
+    "="                             |
+    {IOSeparatorArrow}              {return token(LanguageDefinitions.IOSeparatorArrow);}
 
-    {IOSeparatorEnd}        { yybegin(YYINITIAL); return token(LanguageDefinitions.IO_END);}
-    {LogicSeparatorEnd}     { yybegin(YYINITIAL); return token(LanguageDefinitions.LOGIC_END);}
+    {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
+    {Literal}                       { return token(LanguageDefinitions.LITERAL); }
 
-
-    "," {return token(LanguageDefinitions.NOP);}
-
-    {Identifier} {return token(LanguageDefinitions.IDENTITY);}
-
-    {DecIntegerLiteral}            { return token(LanguageDefinitions.LITERAL); }
-
+    {LineTerminator}                {/*EOL*/ yybegin(YYINITIAL);}
 }
+
+{AnySpace}+             {/*WHITE SPACE YAHI!*/}
 
 [^] { return token(null);}
