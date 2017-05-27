@@ -33,8 +33,6 @@ import com.buttonmash.dsl.io.*;
 
 %{
 
-   private List<Token> stack = new LinkedList<>();
-
   private <T> Token token(T type) {
       return new Token(type, yytext(),yyline,yychar,yychar+yylength());
   }

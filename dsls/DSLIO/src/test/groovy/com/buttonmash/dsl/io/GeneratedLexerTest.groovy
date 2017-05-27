@@ -1,6 +1,6 @@
 package com.buttonmash.dsl.io
 
-import com.buttonmash.dsl.io.generated.DSLLexer
+
 import static com.buttonmash.dsl.io.LanguageDefinitions.*;
 
 import static org.testng.Assert.*

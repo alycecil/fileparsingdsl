@@ -1,5 +1,7 @@
 package com.buttonmash.dsl.io;
 
+
+
 public enum LanguageDefinitions {
     IMPERATIVE("#!"),
 	COMMENT("#"),
@@ -20,7 +22,6 @@ public enum LanguageDefinitions {
 	LOGIC_KEYWORD,
 
 	NOP;
-
 
 	LanguageDefinitions(){
 		this.keyWord = this.name();
