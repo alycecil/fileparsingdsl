@@ -15,7 +15,7 @@ public enum LogicKeywords {
     LINE,
 
 
-    WHEN, THEN, OTHERWISE,
+    WHEN, THEN, OTHERWISE, ELSE,
 
     STARTS, ENDS, CONTAINS, IS, NOT,
 

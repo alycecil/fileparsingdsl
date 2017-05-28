@@ -7,56 +7,64 @@ import java_cup.runtime.*;
 init with {: /** NOP  */ :};
 scan with {: return getScanner().next_token(); :};
 
-/* Terminals (tokens returned by the scanner). */
-terminal            SEMI, PLUS, MINUS, TIMES, UMINUS, LPAREN, RPAREN;
-terminal Integer    NUMBER;        // our scanner provides numbers as integers
-
-terminal IMPERATIVE
-	METHOD_HEADER,
-	OPTION,
-
-	LOGIC_START,
-	LOGIC_END,
-
-	IO_START,
-	IOSeparatorArrow,
-	IO_END,
-
-	IDENTITY,
-	LITERAL,
 
 
-	DO, WITH, NULL, LINE,
-    WHEN, THEN, OTHERWISE,
+terminal IDENTITY, LITERAL;
+terminal IMPERATIVE,METHOD_HEADER,OPTION;
+terminal LOGIC_START, LOGIC_END, IO_START, IOSeparatorArrow, IO_END;
+
+
+
+
+terminal	DO, WITH, NULL, LINE,
+    WHEN, THEN, OTHERWISE, ELSE,
     STARTS, ENDS, CONTAINS, IS, NOT,
     CROSSWALK,
     SET, TO, ON,
     SPLIT, CONCAT,
-    CONVERTDATE, SKIP, ERROR,
+    CONVERTDATE, SKIP, ERROR;
 
-	LOGIC_KEYWORD,
+terminal	LOGIC_KEYWORD;
+terminal	NOP, COMMENT;
 
-	NOP;
+
+/* Non terminals are your like tree */
+
+non terminal dsl, statementList, statement;
+non terminal ioOperation, logicStatement;
 
 
-/* Non terminals */
-non terminal            expr_list;
-non terminal Integer    expr;      // used to store evaluated subexpressions
 
-/* Precedences */
-precedence left PLUS, MINUS;
-precedence left TIMES;
-precedence left UMINUS;
+non terminal value;
+non terminal logicFluff;
 
-/* The grammar rules */
-expr_list ::= expr_list expr:e SEMI         {: System.out.println(e);:}
-            | expr:e SEMI                   {: System.out.println(e);:}
+start with dsl;
+
+dsl ::= statementList:s
 ;
-expr      ::= expr:e1 PLUS  expr:e2         {: RESULT = e1+e2;       :}
-             | expr:e1 MINUS expr:e2        {: RESULT = e1-e2;       :}
-             | expr:e1 TIMES expr:e2        {: RESULT = e1*e2;       :}
-             | MINUS expr:e                 {: RESULT = -e;          :}
-  	     %prec UMINUS
-       | LPAREN expr:e RPAREN	         {: RESULT = e;           :}
-       | NUMBER:n	                     {: RESULT = n;           :}
-             ;
+
+statementList ::= statementList:sl statement:s
+    | /* intentionally left empty (empty parse)*/
+;
+
+statement ::= NOP
+	| COMMENT
+    | SET value:where TO value:from
+    | IO_START ioOperation:io IO_END
+;
+
+ioOperation ::= value:length logicFluff value:storeTo 
+	| value:start logicFluff value:end logicFluff value:storeTo
+;
+
+value ::= LITERAL
+        | IDENTITY
+;
+
+logicFluff ::= TO
+	| ON
+	| WITH
+	| NOP
+	| IOSeparatorArrow
+	| /*Intentionally left blank*/
+	;
