@@ -28,8 +28,12 @@ import com.buttonmash.dsl.io.*;
 %unicode
 
 %{
-  private <T> Token token(T type) {
-      return new Token<T>(type, yytext(),yyline,yychar,yychar+yylength());
+  private Token lastToken;
+  private StringBuilder sb = new StringBuilder();
+
+  private synchronized <T> Token<T> token(T type) {
+      lastToken = new Token<T>(type, yytext(),yyline,yychar,yychar+yylength());
+      return lastToken;
   }
 %}
 
@@ -66,7 +70,7 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
 
 <YYINITIAL> {
     {IOSeparator}                   {yybegin(IO); return token(LanguageDefinitions.IO_START); }
-    {LogicSeparator}                {yybegin(LOGIC);  return token(LanguageDefinitions.LOGIC_START); }
+    {LogicSeparator}                {yybegin(LOGIC); return token(LanguageDefinitions.LOGIC_START); }
 
 
     {MethodHeader}                  {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
@@ -103,6 +107,7 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
 
     {Literal}                       {return token(LanguageDefinitions.LITERAL); }
 
+
 	"DO"	|
 	"WITH"	|
 	"NULL"	|
@@ -127,9 +132,22 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
 	"NOP"                          {if(LogicKeywords.whichKeyword(yytext())!=null){return token(LanguageDefinitions.LOGIC_KEYWORD);}}
 
 
-    {AnySpace}+                     {/*WHITE SPACE*/}
+    {Word}                             {
+ if(lastToken.getType() == LanguageDefinitions.IDENTITY){
+    String current = sb.toString();
+    sb.append(yytext());
+    lastToken.setText(sb.toString());
+ }else{
+    sb = new StringBuilder(yytext());
+    return token(LanguageDefinitions.IDENTITY);
+}
+}
 
-    {Word}                             {/**other*/return token(LanguageDefinitions.IDENTITY);}
+    {AnySpace}+                     { if(lastToken.getType() == LanguageDefinitions.IDENTITY){
+sb.append(yytext());
+    }
+/*WHITE SPACE*/}
+
 
 }
 

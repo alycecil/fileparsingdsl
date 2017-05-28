@@ -89,7 +89,7 @@ public class GeneratedLexerTest {
                 ],
                 [/Logic Simple 2/,
                  " (  SET  A B C  TO 123 )",
-                 [[LOGIC_START, null], [LOGIC_KEYWORD, 'SET'], /*TODO need to merge these*/ [IDENTITY, 'A'], [IDENTITY, 'B'], [IDENTITY, 'C'], [LOGIC_KEYWORD, 'TO'], [LITERAL, "123"], [LOGIC_END, null]]
+                 [[LOGIC_START, null], [LOGIC_KEYWORD, 'SET'], [IDENTITY, 'A B C'], [LOGIC_KEYWORD, 'TO'], [LITERAL, "123"], [LOGIC_END, null]]
                 ],
                 [/Logic Simple 3/,
                  " (SET\t Alpha\nTO 'B C D'\t) ",
