@@ -1,5 +1,7 @@
 package com.buttonmash.dsl.io;
 
+import java_cup.runtime.Symbol;
+
 import java.text.MessageFormat;
 
 public class Token<T> {
@@ -12,6 +14,7 @@ public class Token<T> {
     int line;
     int charBegin;
     int charEnd;
+    Symbol symbol;
 
     public Token(T type, String text, int line, int charBegin, int charEnd) {
         this.type = type;
@@ -61,6 +64,13 @@ public class Token<T> {
         this.charEnd = charEnd;
     }
 
+    public Symbol getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(Symbol symbol) {
+        this.symbol = symbol;
+    }
     @Override
     public String toString() {
         return MessageFormat.format("[{0}, {1}]", type, text);

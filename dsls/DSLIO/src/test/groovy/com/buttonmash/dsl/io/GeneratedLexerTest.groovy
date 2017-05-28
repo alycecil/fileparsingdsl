@@ -1,8 +1,10 @@
 package com.buttonmash.dsl.io
 
-import com.buttonmash.dsl.io.generated.DSLLexer
+
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
+
+import com.buttonmash.dsl.io.generated.*
 
 import static com.buttonmash.dsl.io.LanguageDefinitions.*
 import static org.testng.Assert.*;

@@ -17,6 +17,14 @@
 
     <dependencies>
 
+
+        <!-- CUP runtime, for parsers -->
+        <dependency>
+            <groupId>com.github.vbmacher</groupId>
+            <artifactId>java-cup-runtime</artifactId>
+            <version>11b-20160615</version>
+        </dependency>
+
         <!-- the all important testing lib -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -38,8 +46,6 @@
 
     <build>
         <plugins>
-
-
             <!-- Groovy Compiler, for tests -->
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
@@ -63,6 +69,27 @@
                 <configuration>
                     <target>1.7</target>
                     <source>1.7</source>
+                </configuration>
+            </plugin>
+
+            <!-- Parser code gen (CUP) -->
+            <plugin>
+                <groupId>com.github.vbmacher</groupId>
+                <artifactId>cup-maven-plugin</artifactId>
+                <version>11b-20160615</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packageName>com.buttonmash.dsl.crosswalk.generated</packageName>
+                    <className>DSLIOParser</className>
+                    <symbolsName>DSLIOSymbols</symbolsName>
+
+                    <outputDirectory>${project.build.directory}/generated-sources/cup</outputDirectory>
                 </configuration>
             </plugin>
 

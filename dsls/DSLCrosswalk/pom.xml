@@ -37,8 +37,6 @@
 
     <build>
         <plugins>
-
-
             <!-- Groovy Compiler, for tests -->
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>

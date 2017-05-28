@@ -8,6 +8,11 @@
 
 package com.buttonmash.dsl.io.generated;
 
+import java_cup.runtime.Scanner;
+import java_cup.runtime.Symbol;
+import java_cup.runtime.ComplexSymbolFactory;
+import java_cup.runtime.ComplexSymbolFactory.Location;
+
 import com.buttonmash.dsl.io.*;
 
 
@@ -19,7 +24,7 @@ import com.buttonmash.dsl.io.*;
 %char
 
 %class DSLLexer
-%implements IDSLLexer
+%implements IDSLLexer, Scanner
 
 
 %function getNext
@@ -28,12 +33,44 @@ import com.buttonmash.dsl.io.*;
 %unicode
 
 %{
+    ComplexSymbolFactory symbolFactory;
   private Token lastToken;
   private StringBuilder sb = new StringBuilder();
 
+  StringBuffer string = new StringBuffer();
+
+  public DSLLexer(java.io.Reader in, ComplexSymbolFactory sf){
+  	this(in);
+  	symbolFactory = sf;
+  }
+
+  private Symbol symbol(String name, int sym, Object val) {
+        if(val==null){val = LanguageDefinitions.NOP;}
+        if(symbolFactory==null){
+            return new Symbol(sym, val);
+        }else{
+            Location left = new Location(yyline+1,yycolumn+1,yychar);
+            Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
+            return symbolFactory.newSymbol(name, sym, left, right,val);
+        }
+   }
+
   private synchronized <T> Token<T> token(T type) {
-      lastToken = new Token<T>(type, yytext(),yyline,yychar,yychar+yylength());
-      return lastToken;
+      Token t = new Token<T>(type, yytext(),yyline,yychar,yychar+yylength());
+
+      t.setSymbol(symbol(t.getText(), -1, type));
+
+      lastToken = t;
+      return t;
+  }
+
+  public void setSymbolFactory(ComplexSymbolFactory symbolFactory){
+      this.symbolFactory = symbolFactory;
+  }
+
+  @Override
+  public Symbol next_token() throws Exception{
+      return getNext().getSymbol();
   }
 %}
 
