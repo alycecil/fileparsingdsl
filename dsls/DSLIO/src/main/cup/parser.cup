@@ -11,6 +11,34 @@ scan with {: return getScanner().next_token(); :};
 terminal            SEMI, PLUS, MINUS, TIMES, UMINUS, LPAREN, RPAREN;
 terminal Integer    NUMBER;        // our scanner provides numbers as integers
 
+terminal IMPERATIVE
+	METHOD_HEADER,
+	OPTION,
+
+	LOGIC_START,
+	LOGIC_END,
+
+	IO_START,
+	IOSeparatorArrow,
+	IO_END,
+
+	IDENTITY,
+	LITERAL,
+
+
+	DO, WITH, NULL, LINE,
+    WHEN, THEN, OTHERWISE,
+    STARTS, ENDS, CONTAINS, IS, NOT,
+    CROSSWALK,
+    SET, TO, ON,
+    SPLIT, CONCAT,
+    CONVERTDATE, SKIP, ERROR,
+
+	LOGIC_KEYWORD,
+
+	NOP;
+
+
 /* Non terminals */
 non terminal            expr_list;
 non terminal Integer    expr;      // used to store evaluated subexpressions

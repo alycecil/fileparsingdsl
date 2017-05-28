@@ -36,6 +36,7 @@ import com.buttonmash.dsl.io.*;
     ComplexSymbolFactory symbolFactory;
   private Token lastToken;
   private StringBuilder sb = new StringBuilder();
+  TokenManager tokenManager = new TokenManager();
 
   StringBuffer string = new StringBuffer();
 
@@ -55,8 +56,8 @@ import com.buttonmash.dsl.io.*;
         }
    }
 
-  private synchronized <T> Token<T> token(T type) {
-      Token t = new Token<T>(type, yytext(),yyline,yychar,yychar+yylength());
+  private synchronized Token<LanguageDefinitions> token(LanguageDefinitions type) {
+      Token t = new Token<LanguageDefinitions>(type, yytext(),yyline,yychar,yychar+yylength());
 
       t.setSymbol(symbol(t.getText(), -1, type));
 
@@ -70,7 +71,7 @@ import com.buttonmash.dsl.io.*;
 
   @Override
   public Symbol next_token() throws Exception{
-      return getNext().getSymbol();
+      return tokenManager.getSymbol(getNext());
   }
 %}
 

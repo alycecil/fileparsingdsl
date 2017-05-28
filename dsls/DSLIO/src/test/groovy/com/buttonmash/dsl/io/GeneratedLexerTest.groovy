@@ -1,6 +1,6 @@
 package com.buttonmash.dsl.io
 
-
+import com.buttonmash.dsl.crosswalk.generated.DSLIOSymbols
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
@@ -12,13 +12,13 @@ import static org.testng.Assert.*;
 public class GeneratedLexerTest {
 
     @Test(dataProvider = "parserDataprovider")
-    public void test(testName, dsl, expected) {
+    public void test(testName, String dsl, expected) {
+        TokenManager tokenManager = new TokenManager();
 
-        def dslStringReader = new StringReader(dsl);
 
-        def lexer = new DSLLexer(dslStringReader)
 
         def tokens = []
+        def lexer = new DSLLexer(new StringReader(dsl))
 
         def next = Token.StartToken;
         while (next != null) {
@@ -32,8 +32,8 @@ public class GeneratedLexerTest {
                 expected = expected as List
 
                 def iter = expected.iterator()
-                tokens.eachWithIndex { Token it , idx->
-                    def nxt = iter.next()
+                tokens.eachWithIndex { Token it, idx ->
+                    List nxt = iter.next()
                     if (nxt) {
                         def (type, value) = nxt
 
@@ -42,14 +42,36 @@ public class GeneratedLexerTest {
                         if (value != null) {
                             assertEquals(it.text, value, "#${idx} Value")
                         }
+
+
+
+                        if (type != null) {
+
+                            def symbol = tokenManager.getSymbol(it)
+
+                            Integer expectedSymbolValue = null
+                            if (nxt.size() > 2) {
+                                expectedSymbolValue = nxt.get(3) as Integer
+                            }
+
+                            assertNotNull(symbol, 'Parser Symbol')
+                            if (expectedSymbolValue != null) {
+                                assertEquals symbol?.sym, expectedSymbolValue, "Parser symbol resolved incorrectly"
+                            }
+                        }
                     }
                 }
             }
             assertEquals(tokens.size(), expected.size(), 'should have the same size')
-        }catch(Throwable t){
+        }
+
+        catch (
+                Throwable t
+                ) {
             fail("${testName}\n::DSL::${dsl}::DSL::\nActual:${tokens}\nExpected:${expected}", t)
         }
     }
+
 
     @DataProvider(name = "parserDataprovider")
     public Object[][] parserDataprovider() {
@@ -123,20 +145,19 @@ public class GeneratedLexerTest {
 
                 [/Imperative/,
                  "#!Fluff=Save Me\n",
-                 [[IMPERATIVE, null],[IDENTITY,'Fluff'],[IOSeparatorArrow, '='],[IDENTITY,'Save Me']]
+                 [[IMPERATIVE, null], [IDENTITY, 'Fluff'], [IOSeparatorArrow, '='], [IDENTITY, 'Save Me']]
                 ],
 
                 [/Imperative/,
                  "#! Fluff = Save Me \n",
-                 [[IMPERATIVE, null],[IDENTITY,'Fluff'],[IOSeparatorArrow, '='],[IDENTITY,'Save Me']]
+                 [[IMPERATIVE, null], [IDENTITY, 'Fluff'], [IOSeparatorArrow, '='], [IDENTITY, 'Save Me']]
                 ],
 
                 [/Option/,
                  "@Fluff=Save Me\n",
-                 [[OPTION, null],[IDENTITY,'Fluff'],[IOSeparatorArrow, '='],[IDENTITY,'Save Me']]
+                 [[OPTION, null], [IDENTITY, 'Fluff'], [IOSeparatorArrow, '='], [IDENTITY, 'Save Me']]
                 ],
         ]
-
 
         //x1
         addCrossTests(result)
@@ -145,7 +166,7 @@ public class GeneratedLexerTest {
     }
 
     private void addCrossTests(List<List<Object>> result) {
-    //Cross Tests
+        //Cross Tests
         def next = []
         result.each { a ->
             result.each { b ->
