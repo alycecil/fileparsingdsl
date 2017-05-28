@@ -163,4 +163,4 @@ sb.append(yytext());
     {WhiteSpace}                    {/*whitespace*/}
 }
 
-[^] { /**Ooops?*/return token(null);}
+[^] { /**Ooops?*/ return token(null);}

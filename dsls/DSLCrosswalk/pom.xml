@@ -38,7 +38,8 @@
     <build>
         <plugins>
 
-            <!-- Groovy Compiler -->
+
+            <!-- Groovy Compiler, for tests -->
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
@@ -46,7 +47,7 @@
                 <executions>
                     <execution>
                         <goals>
-							<goal>compile</goal>
+                            <goal>addTestSources</goal>
                             <goal>testCompile</goal>
                         </goals>
                     </execution>
@@ -59,11 +60,32 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${plugin.version.manvencompiler}</version>
                 <configuration>
-                    <target>${java.version}</target>
-                    <generatedSourcesDirectory>src/main/generated-sources</generatedSourcesDirectory>
+                    <target>1.7</target>
+                    <source>1.7</source>
                 </configuration>
             </plugin>
 
+            <!-- Lexer code gen. -->
+            <plugin>
+                <groupId>de.jflex</groupId>
+                <artifactId>jflex-maven-plugin</artifactId>
+                <version>${plugin.version.jflex}</version>
+                <executions>
+                    <execution>
+                        <id>jflex</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/java</outputDirectory>
+                            <lexDefinitions>
+                                <lexDefinition>src/main/jflex</lexDefinition>
+                            </lexDefinitions>
+                            <verbose>true</verbose>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

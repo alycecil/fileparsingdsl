@@ -18,6 +18,7 @@
 
         <plugin.version.manvencompiler>3.6.1</plugin.version.manvencompiler>
         <plugin.version.gmavenplus>1.5</plugin.version.gmavenplus>
+        <plugin.version.jflex>1.6.1</plugin.version.jflex>
     </properties>
 
 
@@ -27,5 +28,4 @@
 
       <module>toolkit</module>
   </modules>
-
 </project>

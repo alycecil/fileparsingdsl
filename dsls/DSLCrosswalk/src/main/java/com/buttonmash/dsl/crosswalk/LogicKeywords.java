@@ -28,6 +28,9 @@ public enum LogicKeywords {
 
     CONVERTDATE,
 
+    ANY,
+    BLANK,
+    AFTER, BEFORE,
 
     /**
      * CONTROL FLOW Stop, return nothing.
@@ -43,5 +46,16 @@ public enum LogicKeywords {
      * ERROR 'OOPS MESSAGE'
      */
     ERROR,
+
+
+    UNKNOWN;
+
+    public static LogicKeywords whichKeyword(String text) {
+        try{
+            return valueOf(text);
+        }catch(Throwable t){
+            return null;
+        }
+    }
 
 }

@@ -37,16 +37,6 @@
 
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.gmavenplus</groupId>
-                    <artifactId>gmavenplus-plugin</artifactId>
-                    <version>${plugin.version.gmavenplus}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
 
 
@@ -80,7 +70,7 @@
             <plugin>
                 <groupId>de.jflex</groupId>
                 <artifactId>jflex-maven-plugin</artifactId>
-                <version>1.6.1</version>
+                <version>${plugin.version.jflex}</version>
                 <executions>
                     <execution>
                         <id>jflex</id>

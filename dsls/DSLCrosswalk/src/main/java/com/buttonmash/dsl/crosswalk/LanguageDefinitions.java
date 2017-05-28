@@ -7,12 +7,13 @@ public enum LanguageDefinitions {
 	METHOD_HEADER("@@"),
 	OPTION("@"),
 
-	LOGIC_START("("),
-	LOGIC_END(")"),
+	COLUMN_HEADER("||"),
+	COLUMN("|"),
 
-	IO_START("["),
-	IOSeparatorArrow("->"),
-	IO_END("]"),
+	LINE,
+
+	INPUT(">"),
+	OUTPUT("<"),
 
 	IDENTITY,
 	LITERAL,

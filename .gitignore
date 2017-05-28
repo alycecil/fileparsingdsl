@@ -2,6 +2,8 @@
 
 #Generated Sources
 src/main/generated-sources
+generated
+generated/
 
 # IntelliJ #
 .idea
