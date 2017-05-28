@@ -25,7 +25,7 @@
 
         <dependency>
             <groupId>com.buttonmash</groupId>
-            <artifactId>dsl.io</artifactId>
+            <artifactId>dsl.crosswalk</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
 

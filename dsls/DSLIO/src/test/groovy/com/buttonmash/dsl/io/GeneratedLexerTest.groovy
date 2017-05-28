@@ -22,7 +22,8 @@ public class GeneratedLexerTest {
         def next = Token.StartToken;
         while(next!=null){
             next = lexer.next
-            tokens << next
+            if(next!=null)
+                tokens << next
         }
 
         println "Tokens "
@@ -36,7 +37,6 @@ public class GeneratedLexerTest {
 
         if(expected instanceof List){
             expected  = expected as List
-            assertEquals( tokens.size(), expected.size() )
 
             def iter = expected.iterator()
             tokens.each {
@@ -45,9 +45,14 @@ public class GeneratedLexerTest {
                     def (type, value) = nxt
 
                     assertEquals(it.type, type)
+
+                    if(value!=null){
+
+                    }
                 }
             }
         }
+        assertEquals( tokens.size(), expected.size() )
     }
 
     @DataProvider(name = "parserDataprovider")
@@ -55,15 +60,21 @@ public class GeneratedLexerTest {
         [
             [/Fixed Width Positional Simple/,
              /[1,10->A]/,
-             [[IO_START, 0], [LITERAL,1], [NOP, null],[LITERAL,10], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,0], null]
+             [[IO_START, null], [LITERAL,'1'], [NOP, null],[LITERAL,'10'], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,null]]
             ],
-            [/Fixed Width Positional 1/,
+            [/Fixed Width Positional Simnple 2/,
              /[ 1 ,10 -> A ]/,
-             [[IO_START, 0], [LITERAL,1], [NOP, null],[LITERAL,10], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,0], null]
+             [[IO_START, null], [LITERAL,'1'], [NOP, null],[LITERAL,'10'], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,null]]
             ],
-            [/Fixed Width Positional 1/,
-             " [ 1 , 10  -> A ] ",
-             [[IO_START, 0], [LITERAL,1], [NOP, null],[LITERAL,10], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,0], null]
+            [/Fixed Width Positional Simple 3/,
+             " [ 1 , 10  ->\nA ] ",
+             [[IO_START, null], [LITERAL,'1'], [NOP, null],[LITERAL,'10'], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END,null]]
+            ],
+
+
+            [/Fixed Width Positional Simple 3/,
+             " (SET A TO 'B') ",
+             [[LOGIC_START, null], [LOGIC_KEYWORD,'SET'], [IDENTITY, 'A'], [LOGIC_KEYWORD,'TO'], [LITERAL, "'B'"], [LOGIC_END,null]]
             ],
         ] as Object[][]
     }

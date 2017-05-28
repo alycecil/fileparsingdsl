@@ -1,8 +1,11 @@
 package com.buttonmash.dsl.io;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 public enum LogicKeywords {
-    //NO-OPs
-    NOP, DO, WITH,
+
+    DO, WITH,
 
     NULL,
 
@@ -43,5 +46,18 @@ public enum LogicKeywords {
      * ERROR 'OOPS MESSAGE'
      */
     ERROR,
+
+
+
+    NOP;
+
+
+    public static LogicKeywords whichKeyword(String text) {
+        try{
+            return valueOf(text);
+        }catch(Throwable t){
+            return null;
+        }
+    }
 
 }

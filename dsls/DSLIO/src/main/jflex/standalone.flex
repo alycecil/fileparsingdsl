@@ -25,11 +25,9 @@ import com.buttonmash.dsl.io.*;
 %function getNext
 %type Token
 
-%debug
-
-
 %unicode
 
+%debug
 
 %{
 
@@ -57,10 +55,12 @@ OptionHeader = @
 IMPERATIVE = #\!
 COMMENT = #
 
-Identifier = [:jletter:] ({WhiteSpace}|[:jletterdigit:])*[:jletterdigit:]*
+Word = [:jletter:][:jletterdigit:]*
 
  DecIntegerLiteral = 0 | [1-9][0-9]*
 
+
+Identifier = {Word}({WhiteSpace}|{Word}|{DecIntegerLiteral})*
 Literal = {DecIntegerLiteral}|'{Identifier}*'
 
 %state USEFUL, IO, LOGIC
@@ -73,7 +73,7 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
 
     {MethodHeader}                  {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
 
-    {OptionHeader}                 {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
+    {OptionHeader}                  {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
 
 }
 
@@ -86,24 +86,54 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
 
 
 
-    {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
     {Literal}                       {return token(LanguageDefinitions.LITERAL); }
+    {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
 }
 
 <LOGIC> {
     {LogicSeparatorEnd}             {yybegin(YYINITIAL); return token(LanguageDefinitions.LOGIC_END);}
 
+    {Literal}                       {return token(LanguageDefinitions.LITERAL); }
 
-    {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
-    {Literal}                       { return token(LanguageDefinitions.LITERAL); }
+	"DO"	|
+	"WITH"	|
+	"NULL"	|
+	"LINE"	|
+	"WHEN"	|
+	"THEN"	|
+	"OTHERWISE"	|
+	"STARTS"	|
+	"ENDS"	|
+	"CONTAINS"	|
+	"IS"	|
+	"NOT"	|
+	"CROSSWALK"	|
+	"SET"	|
+	"TO"	|
+	"ON"	|
+	"SPLIT"	|
+	"CONCAT"	|
+	"CONVERTDATE"	|
+	"SKIP"	|
+	"ERROR"	|
+	"NOP"                          {
+        if(LogicKeywords.whichKeyword(yytext())!=null){
+            return token(LanguageDefinitions.LOGIC_KEYWORD);
+        }
+    }
+
+
+    {AnySpace}+             {/*WHITE SPACE YAHI!*/}
+
+    [^] {/**other*/return token(LanguageDefinitions.IDENTITY);}
 }
 
 <USEFUL> {
     "="                             |
     {IOSeparatorArrow}              {return token(LanguageDefinitions.IOSeparatorArrow);}
 
+    {Literal}                       {return token(LanguageDefinitions.LITERAL); }
     {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
-    {Literal}                       { return token(LanguageDefinitions.LITERAL); }
 
     {LineTerminator}                {/*EOL*/ yybegin(YYINITIAL);}
 }
