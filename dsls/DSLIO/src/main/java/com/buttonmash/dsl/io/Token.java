@@ -63,7 +63,8 @@ public class Token<T> {
 
     @Override
     public String toString() {
-        return MessageFormat.format("Token'{'type={0}, text=''{1}'', line={2}, charBegin={3}, charEnd={4}'}'", type, text, line, charBegin, charEnd);
+        return MessageFormat.format("[{0}, ''{1}'']", type, text);
+        //return MessageFormat.format("Token'{'type={0}, text=''{1}'', line={2}, charBegin={3}, charEnd={4}'}'", type, text, line, charBegin, charEnd);
     }
 }
 

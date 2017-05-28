@@ -27,12 +27,9 @@ import com.buttonmash.dsl.io.*;
 
 %unicode
 
-%debug
-
 %{
-
   private <T> Token token(T type) {
-      return new Token(type, yytext(),yyline,yychar,yychar+yylength());
+      return new Token<T>(type, yytext(),yyline,yychar,yychar+yylength());
   }
 %}
 
@@ -53,17 +50,17 @@ MethodHeader = @@
 OptionHeader = @
 
 IMPERATIVE = #\!
-COMMENT = #
+COMMENT = #[^(\!|\r|\n|\r\n)][^(\r|\n|\r\n)]+
 
 Word = [:jletter:][:jletterdigit:]*
 
- DecIntegerLiteral = 0 | [1-9][0-9]*
+DecIntegerLiteral = 0 | [1-9][0-9]*
 
 
-Identifier = {Word}({WhiteSpace}|{Word}|{DecIntegerLiteral})*
+Identifier = {Word}(({WhiteSpace})*({Word}|{DecIntegerLiteral}))*
 Literal = {DecIntegerLiteral}|'{Identifier}*'
 
-%state USEFUL, IO, LOGIC
+%state USEFUL, IO, LOGIC, TYPE
 
 %%
 
@@ -71,23 +68,34 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
     {IOSeparator}                   {yybegin(IO); return token(LanguageDefinitions.IO_START); }
     {LogicSeparator}                {yybegin(LOGIC);  return token(LanguageDefinitions.LOGIC_START); }
 
+
     {MethodHeader}                  {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
+    {OptionHeader}                  {yybegin(USEFUL); return token(LanguageDefinitions.OPTION);}
+    {IMPERATIVE}                    {yybegin(USEFUL); return token(LanguageDefinitions.IMPERATIVE);}
+    {COMMENT}                       {return token(LanguageDefinitions.COMMENT);}
 
-    {OptionHeader}                  {yybegin(USEFUL); return token(LanguageDefinitions.METHOD_HEADER);}
-
+    [^]                             {/* wtf is this / WHITE SPACE YAHI!*/}
 }
 
 <IO> {
+    {LogicSeparator}                {yybegin(TYPE);  return token(LanguageDefinitions.LOGIC_START); }
     {IOSeparatorArrow}              {return token(LanguageDefinitions.IOSeparatorArrow);}
 
     {IOSeparatorEnd}                {yybegin(YYINITIAL); return token(LanguageDefinitions.IO_END);}
 
     ","                             {return token(LanguageDefinitions.NOP);}
 
-
-
     {Literal}                       {return token(LanguageDefinitions.LITERAL); }
     {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
+
+    {AnySpace}+                     {/*WHITE SPACE*/}
+}
+
+<TYPE> {
+    {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
+    {Literal}                       {return token(LanguageDefinitions.LITERAL); }
+
+    {LogicSeparatorEnd}             {yybegin(IO); return token(LanguageDefinitions.LOGIC_END);}
 }
 
 <LOGIC> {
@@ -116,16 +124,13 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
 	"CONVERTDATE"	|
 	"SKIP"	|
 	"ERROR"	|
-	"NOP"                          {
-        if(LogicKeywords.whichKeyword(yytext())!=null){
-            return token(LanguageDefinitions.LOGIC_KEYWORD);
-        }
-    }
+	"NOP"                          {if(LogicKeywords.whichKeyword(yytext())!=null){return token(LanguageDefinitions.LOGIC_KEYWORD);}}
 
 
-    {AnySpace}+             {/*WHITE SPACE YAHI!*/}
+    {AnySpace}+                     {/*WHITE SPACE*/}
 
-    [^] {/**other*/return token(LanguageDefinitions.IDENTITY);}
+    {Word}                             {/**other*/return token(LanguageDefinitions.IDENTITY);}
+
 }
 
 <USEFUL> {
@@ -136,8 +141,8 @@ Literal = {DecIntegerLiteral}|'{Identifier}*'
     {Identifier}                    {return token(LanguageDefinitions.IDENTITY);}
 
     {LineTerminator}                {/*EOL*/ yybegin(YYINITIAL);}
+
+    {WhiteSpace}                    {/*whitespace*/}
 }
 
-{AnySpace}+             {/*WHITE SPACE YAHI!*/}
-
-[^] { return token(null);}
+[^] { /**Ooops?*/return token(null);}
