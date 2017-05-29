@@ -1,20 +1,9 @@
 /* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
 
-
-
-/* define how to connect to the scanner! */
-init with {: /** NOP  */ :};
-scan with {: return getScanner().next_token(); :};
-
-
-
 terminal IDENTITY, LITERAL;
 terminal IMPERATIVE,METHOD_HEADER,OPTION;
 terminal LOGIC_START, LOGIC_END, IO_START, IOSeparatorArrow, IO_END;
-
-
-
 
 terminal	DO, WITH, NULL, LINE,
     WHEN, THEN, OTHERWISE, ELSE,

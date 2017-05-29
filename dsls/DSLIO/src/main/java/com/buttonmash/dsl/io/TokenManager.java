@@ -21,6 +21,9 @@ public class TokenManager {
     }
 
     public Symbol getSymbol(Token<LanguageDefinitions> token) throws Exception {
+        if(token==null){
+            return null;
+        }
         Symbol symbol = token.getSymbol();
         if(symbol==null){
             symbol = new Symbol(-1);

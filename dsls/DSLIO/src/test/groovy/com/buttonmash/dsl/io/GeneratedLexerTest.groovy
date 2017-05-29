@@ -1,18 +1,16 @@
 package com.buttonmash.dsl.io
 
-import com.buttonmash.dsl.crosswalk.generated.DSLIOSymbols
+import com.buttonmash.dsl.io.generated.DSLLexer
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
-import com.buttonmash.dsl.io.generated.*
-
 import static com.buttonmash.dsl.io.LanguageDefinitions.*
-import static org.testng.Assert.*;
+import static org.testng.Assert.*
 
 public class GeneratedLexerTest {
 
-    @Test(dataProvider = "parserDataprovider")
-    public void test(testName, String dsl, expected) {
+    @Test(groups=['Lexer','Scanner'], dataProvider = "parserDataprovider")
+    public void lexerTest(testName, String dsl, expected) {
         TokenManager tokenManager = new TokenManager();
 
 
@@ -63,18 +61,14 @@ public class GeneratedLexerTest {
                 }
             }
             assertEquals(tokens.size(), expected.size(), 'should have the same size')
-        }
-
-        catch (
-                Throwable t
-                ) {
+        }catch ( Throwable t ) {
             fail("${testName}\n::DSL::${dsl}::DSL::\nActual:${tokens}\nExpected:${expected}", t)
         }
     }
 
 
     @DataProvider(name = "parserDataprovider")
-    public Object[][] parserDataprovider() {
+    public static Object[][] parserDataprovider() {
         def result = [
                 [/Fixed Width Positional/,
                  /[1,10->A]/,
@@ -165,7 +159,7 @@ public class GeneratedLexerTest {
         result as Object[][]
     }
 
-    private void addCrossTests(List<List<Object>> result) {
+    private static void addCrossTests(List<List<Object>> result) {
         //Cross Tests
         def next = []
         result.each { a ->
