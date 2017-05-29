@@ -6,8 +6,12 @@ import java_cup.runtime.ComplexSymbolFactory
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
 
+import javax.xml.stream.XMLStreamWriter;
+
 import java_cup.runtime.XMLElement;
-import java_cup.runtime.ScannerBuffer;
+import java_cup.runtime.ScannerBuffer
+
+import javax.xml.stream.XMLOutputFactory;
 
 import static com.buttonmash.dsl.io.LanguageDefinitions.*
 import static org.testng.Assert.fail
@@ -25,7 +29,11 @@ class ParserTest {
 
             actual = (XMLElement)mine.debug_parse().value;
 
-            println actual
+            def sb = new ByteArrayOutputStream()
+            XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLEventWriter(sb)
+
+            XMLElement.dump(writer, actual);
+            println ':'+sb.toString()
 
             fail('We did nothing');
 

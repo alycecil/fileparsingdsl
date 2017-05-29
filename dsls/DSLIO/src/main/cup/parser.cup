@@ -1,29 +1,75 @@
-/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
+/* Comments thanks to jflex.de ycalc.cup*/
 import java_cup.runtime.*;
 
-terminal IDENTITY, LITERAL;
-terminal IMPERATIVE,METHOD_HEADER,OPTION;
-terminal LOGIC_START, LOGIC_END, IO_START, IOSeparatorArrow, IO_END;
+import com.buttonmash.dsl.io.*;
 
-terminal	DO, WITH, NULL, LINE,
-    WHEN, THEN, OTHERWISE, ELSE,
-    STARTS, ENDS, CONTAINS, IS, NOT,
-    CROSSWALK,
-    SET, TO, ON,
-    SPLIT, CONCAT,
-    CONVERTDATE, SKIP, ERROR;
 
-terminal	LOGIC_KEYWORD;
+/* Parser code to change the way the parser reports errors (include
+   line and column number of the error). */
+parser code {:
+
+    @Override
+    /** Change the method report_error so it will display the line and
+       column of where the error occurred in the input as well as the
+       reason for the error which is passed into the method in the
+       String 'message'. */
+    public void report_error(String message, Object info) {
+
+        /* Create a StringBuilder called 'm' with the string 'Error' in it. */
+        StringBuilder m = new StringBuilder("Error");
+
+        /* Check if the information passed to the method is the same
+           type as the type java_cup.runtime.Symbol. */
+        if (info instanceof java_cup.runtime.Symbol) {
+            /* Declare a java_cup.runtime.Symbol object 's' with the
+               information in the object info that is being typecasted
+               as a java_cup.runtime.Symbol object. */
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+
+            /* Check if the line number in the input is greater or
+               equal to zero. */
+            if (s.left >= 0) {
+                /* Add to the end of the StringBuilder error message
+                   the line number of the error in the input. */
+                m.append(" in line "+(s.left+1));
+                /* Check if the column number in the input is greater
+                   or equal to zero. */
+                if (s.right >= 0)
+                    /* Add to the end of the StringBuilder error message
+                       the column number of the error in the input. */
+                    m.append(", column "+(s.right+1));
+            }
+        }
+
+        /* Add to the end of the StringBuilder error message created in
+           this method the message that was passed into this method. */
+        m.append(" : "+message);
+
+        /* Print the contents of the StringBuilder 'm', which contains
+           an error message, out on a line. */
+        System.err.println(m);
+    }
+
+    @Override
+    /* Change the method report_fatal_error so when it reports a fatal
+       error it will display the line and column number of where the
+       fatal error occurred in the input as well as the reason for the
+       fatal error which is passed into the method in the object
+       'message' and then exit.*/
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        System.exit(1);
+    }
+:};
+terminal Token IDENTITY, LITERAL,
+    IMPERATIVE,METHOD_HEADER,OPTION,
+    LOGIC_START, LOGIC_END, IO_START, IOSeparatorArrow, IO_END;
 terminal	NOP, COMMENT;
 
 
 /* Non terminals are your like tree */
 
-non terminal dsl, statementList, statement;
-non terminal ioOperation, logicStatement;
-
-
-
+non terminal dsl, statementList, statement, ioOperation;
 non terminal value;
 non terminal logicFluff;
 
@@ -37,23 +83,17 @@ statementList ::= statementList:sl statement:s
 ;
 
 statement ::= NOP
-	| COMMENT
-    | SET value:where TO value:from
     | IO_START ioOperation:io IO_END
 ;
 
-ioOperation ::= value:length logicFluff value:storeTo 
-	| value:start logicFluff value:end logicFluff value:storeTo
+ioOperation ::= value:start logicFluff:fluff1 value:end logicFluff:fluff2 value:storeTo {: System.out.println("["+start+" "+end+" "+storeTo); :}
 ;
 
-value ::= LITERAL
-        | IDENTITY
+value ::= LITERAL:it
+        | IDENTITY:it  {: System.out.println(" = " + it); :}
 ;
 
-logicFluff ::= TO
-	| ON
-	| WITH
-	| NOP
+logicFluff ::= NOP
 	| IOSeparatorArrow
 	| /*Intentionally left blank*/
 	;

@@ -22,6 +22,7 @@ public class Token<T> {
         this.line = line;
         this.charBegin = charBegin;
         this.charEnd = charEnd;
+
     }
 
     public T getType() {
@@ -64,13 +65,14 @@ public class Token<T> {
         this.charEnd = charEnd;
     }
 
+    public void setSymbol(Symbol symbol) {
+        this.symbol = symbol;
+    }
+
     public Symbol getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(Symbol symbol) {
-        this.symbol = symbol;
-    }
     @Override
     public String toString() {
         return MessageFormat.format("[{0}, {1}]", type, text);

@@ -1,6 +1,7 @@
 package com.buttonmash.dsl.io;
 
 import com.buttonmash.dsl.crosswalk.generated.DSLIOSymbols;
+import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 
 import java.util.HashMap;
@@ -8,8 +9,11 @@ import java.util.HashMap;
 public class TokenManager {
 
     private final HashMap<String, Integer> nameToIndex;
+    private final ComplexSymbolFactory symbolFactory;
 
     public TokenManager() {
+        symbolFactory=new ComplexSymbolFactory();
+
         nameToIndex = new HashMap<>();
 
         int index = 0;
@@ -21,38 +25,30 @@ public class TokenManager {
     }
 
     public Symbol getSymbol(Token<LanguageDefinitions> token) throws Exception {
-        if(token==null){
+
+        if (token == null) {
             return null;
         }
-        Symbol symbol = token.getSymbol();
-        if(symbol==null){
-            symbol = new Symbol(-1);
-        }
-
-        if (symbol.sym < 0) {
             Integer idx = null;
-            String symbolText = null;
-            if (LanguageDefinitions.LOGIC_KEYWORD.equals(token.getType())) {
-                symbolText = token.getText();
-                idx = getSymFromString(symbolText);
-            }
-
-            if (idx == null) {
-                symbolText = token.getType().name();
-                idx = getSymFromString(symbolText);
-            }
-
-            if(idx!=null){
-                symbol.sym=idx;
-                if(symbol.value==null){
-                    symbol.value = symbolText;
-                }
-            }
+        String symbolText = null;
+        if (LanguageDefinitions.LOGIC_KEYWORD.equals(token.getType())) {
+            symbolText = token.getText();
+            idx = getSymFromString(symbolText);
         }
 
+        if (idx == null) {
+            symbolText = token.getType().name();
+            idx = getSymFromString(symbolText);
+        }
 
+        if (idx == null) {
+            idx = -1;/*Some unknown magic slipped in*/
+        }
+
+        Symbol symbol = symbolFactory.newSymbol(token.toString(), idx, token);
         return symbol;
     }
+
 
 
     public int getSymFromString(String param) {

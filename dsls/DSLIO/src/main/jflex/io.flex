@@ -33,40 +33,18 @@ import com.buttonmash.dsl.io.*;
 %unicode
 
 %{
-    ComplexSymbolFactory symbolFactory;
   private Token lastToken;
   private StringBuilder sb = new StringBuilder();
   TokenManager tokenManager = new TokenManager();
 
-  StringBuffer string = new StringBuffer();
-
   public DSLLexer(java.io.Reader in, ComplexSymbolFactory sf){
   	this(in);
-  	symbolFactory = sf;
   }
-
-  private Symbol symbol(String name, int sym, Object val) {
-        if(val==null){val = LanguageDefinitions.NOP;}
-        if(symbolFactory==null){
-            return new Symbol(sym, val);
-        }else{
-            Location left = new Location(yyline+1,yycolumn+1,yychar);
-            Location right= new Location(yyline+1,yycolumn+yylength(), yychar+yylength());
-            return symbolFactory.newSymbol(name, sym, left, right,val);
-        }
-   }
 
   private synchronized Token<LanguageDefinitions> token(LanguageDefinitions type) {
       Token t = new Token<LanguageDefinitions>(type, yytext(),yyline,yychar,yychar+yylength());
-
-      t.setSymbol(symbol(t.getText(), -1, type));
-
       lastToken = t;
       return t;
-  }
-
-  public void setSymbolFactory(ComplexSymbolFactory symbolFactory){
-      this.symbolFactory = symbolFactory;
   }
 
   @Override
