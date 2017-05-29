@@ -10,8 +10,6 @@ public class IOOperation implements Operation {
 
     public IOOperation(Token ... arg0) {
         args = Arrays.asList(arg0);
-
-        System.out.println("Made : "+this.toString());
     }
 
     @Override
