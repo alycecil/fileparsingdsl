@@ -21,7 +21,7 @@ public enum LanguageDefinitions {
 
 	LOGIC_KEYWORD,
 
-	NOP;
+	EOF, NOP;
 
 	LanguageDefinitions(){
 		this.keyWord = this.name();

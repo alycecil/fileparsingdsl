@@ -41,17 +41,17 @@ class TokenManagerTest {
                  DSLIOSymbols.IO_END,
                 ],
 
-                [/Set/,
-                 LogicKeywords.SET,
-                 new Token(LOGIC_KEYWORD,LogicKeywords.SET.name(),0,1,2),
-                 DSLIOSymbols.SET,
-                ],
-
-                [/Split/,
-                 LogicKeywords.SPLIT,
-                 new Token(LOGIC_KEYWORD,LogicKeywords.SPLIT.name(),0,1,2),
-                 DSLIOSymbols.SPLIT,
-                ],
+//                [/Set/,
+//                 LogicKeywords.SET,
+//                 new Token(LOGIC_KEYWORD,LogicKeywords.SET.name(),0,1,2),
+//                 DSLIOSymbols.SET,
+//                ],
+//
+//                [/Split/,
+//                 LogicKeywords.SPLIT,
+//                 new Token(LOGIC_KEYWORD,LogicKeywords.SPLIT.name(),0,1,2),
+//                 DSLIOSymbols.SPLIT,
+//                ],
         ]
 
         result as Object[][]

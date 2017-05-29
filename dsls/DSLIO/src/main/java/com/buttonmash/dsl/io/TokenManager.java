@@ -29,7 +29,7 @@ public class TokenManager {
         if (token == null) {
             return null;
         }
-            Integer idx = null;
+        Integer idx = null;
         String symbolText = null;
         if (LanguageDefinitions.LOGIC_KEYWORD.equals(token.getType())) {
             symbolText = token.getText();
@@ -45,7 +45,7 @@ public class TokenManager {
             idx = -1;/*Some unknown magic slipped in*/
         }
 
-        Symbol symbol = symbolFactory.newSymbol(token.toString(), idx, token);
+        Symbol symbol = new Symbol(idx,token.getLine(),token.getCharBegin(), token);
         return symbol;
     }
 

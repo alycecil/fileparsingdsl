@@ -1,7 +1,10 @@
 /* Comments thanks to jflex.de ycalc.cup*/
 import java_cup.runtime.*;
 
+import com.buttonmash.dsl.io.tokens.*;
 import com.buttonmash.dsl.io.*;
+
+import java.util.*;
 
 
 /* Parser code to change the way the parser reports errors (include
@@ -64,33 +67,37 @@ parser code {:
 terminal Token IDENTITY, LITERAL,
     IMPERATIVE,METHOD_HEADER,OPTION,
     LOGIC_START, LOGIC_END, IO_START, IOSeparatorArrow, IO_END;
-terminal	NOP, COMMENT;
+terminal Token	NOP, COMMENT;
 
 
 /* Non terminals are your like tree */
 
-non terminal dsl, statementList, statement, ioOperation;
-non terminal value;
-non terminal logicFluff;
+non terminal dsl;
+non terminal List statementList;
+non terminal Operation statement;
+non terminal IOOperation ioOperation;
+non terminal Token value;
+non terminal Token logicFluff;
 
 start with dsl;
 
-dsl ::= statementList:s
+dsl ::= statementList:s  {: RESULT = new Program(s); :}
 ;
 
-statementList ::= statementList:sl statement:s
-    | /* intentionally left empty (empty parse)*/
+statementList ::= statementList:sl statement:s    {: sl.add(s); RESULT = sl; :}
+    | /* intentionally left empty (empty parse)*/ {: RESULT = new LinkedList(); :}
 ;
 
 statement ::= NOP
-    | IO_START ioOperation:io IO_END
+    | IO_START ioOperation:it IO_END {: RESULT = it; :}
 ;
 
-ioOperation ::= value:start logicFluff:fluff1 value:end logicFluff:fluff2 value:storeTo {: System.out.println("["+start+" "+end+" "+storeTo); :}
+ioOperation ::= value:start logicFluff:fluff1 value:end logicFluff:fluff2 value:storeTo {: RESULT = new IOOperation(start,end,storeTo); :}
+    |  value:length logicFluff:fluff2 value:storeTo {: RESULT = new IOOperation(length,storeTo); :}
 ;
 
-value ::= LITERAL:it
-        | IDENTITY:it  {: System.out.println(" = " + it); :}
+value ::= LITERAL:it     {: RESULT = it; :}
+        | IDENTITY:it    {: RESULT = it; :}
 ;
 
 logicFluff ::= NOP

@@ -2,6 +2,8 @@ package com.buttonmash.dsl.io
 
 import com.buttonmash.dsl.crosswalk.generated.DSLIOParser
 import com.buttonmash.dsl.io.generated.DSLLexer
+import com.buttonmash.dsl.io.tokens.IOOperation
+import com.buttonmash.dsl.io.tokens.Operation
 import java_cup.runtime.ComplexSymbolFactory
 import org.testng.annotations.DataProvider
 import org.testng.annotations.Test
@@ -14,31 +16,57 @@ import java_cup.runtime.ScannerBuffer
 import javax.xml.stream.XMLOutputFactory;
 
 import static com.buttonmash.dsl.io.LanguageDefinitions.*
+import static org.testng.Assert.assertEquals
+import static org.testng.Assert.assertNotNull
 import static org.testng.Assert.fail
 
 class ParserTest {
 
     @Test(groups = 'Lexer',  dataProvider = 'parserDataprovider')
-    public void parserTest(testName, String dsl, expected) {
-        def actual = null;
+    public void parserTest(testName, String dsl, expectedScan, expectedLexed) {
+        def actual = null
         try {
 
             def factory = new ComplexSymbolFactory()
             ScannerBuffer lexer = new ScannerBuffer(new DSLLexer(new StringReader(dsl), factory))
-            DSLIOParser mine = new DSLIOParser(lexer);
+            DSLIOParser mine = new DSLIOParser(lexer)
 
-            actual = (XMLElement)mine.debug_parse().value;
+            actual = (Program)mine.parse().value
 
-            def sb = new ByteArrayOutputStream()
-            XMLStreamWriter writer = XMLOutputFactory.newInstance().createXMLEventWriter(sb)
+            assertNotNull(actual, 'We did something right?')
 
-            XMLElement.dump(writer, actual);
-            println ':'+sb.toString()
+            def ops = actual.operations.iterator()
 
-            fail('We did nothing');
+            if(expectedLexed instanceof List){
+                expectedLexed.each {
+
+                    Operation underTest = ops.next()
+
+                    validateOperationType(it, underTest)
+
+                }
+            }else{
+                fail('We did no testing poor show')
+            }
 
         }catch (Throwable t) {
-            fail("${testName}\n::DSL::${dsl}::DSL::\nActual:${actual}\nExpected:${expected}", t)
+            fail("${testName}\n::DSL::${dsl}::DSL::\nActual:${actual}\nExpected:${expectedLexed}", t)
+        }
+    }
+
+    private void validateOperationType(it, Operation underTest) {
+        Class expectedTokenType;
+        if (it instanceof List) {
+            expectedTokenType = it.first()
+        } else {
+            expectedTokenType = it
+        }
+
+        if (expectedTokenType != null) {
+            assertEquals underTest.getClass(), expectedTokenType, 'Operation Type'
+
+        } else {
+            fail('We did not provide an expected...')
         }
     }
 
@@ -48,33 +76,52 @@ class ParserTest {
         def result = [
                 [/Fixed Width Positional/,
                  /[1,10->A]/,
-                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END, null]]
+                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1'], [LITERAL, '10'],[IDENTITY, 'A'], ] ]
                 ],
-//                [/Fixed Width Positional 2/,
-//                 /[ 1 ,10 -> A B C ]/,
-//                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A B C'], [IO_END, null]]
-//                ],
-//                [/Fixed Width Positional 3/,
-//                 " [ 1 , 10  ->\nA 1 100 ] ",
-//                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A 1 100'], [IO_END, null]]
-//                ],
-//                [/Fixed Width Positional 4/,
-//                 " [ 1 , 10  ->\nA 1 100 ] ",
-//                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A 1 100'], [IO_END, null]]
-//                ],
-//
-//                [/Fixed Width Length/,
-//                 " [1234->Alp123]",
-//                 [[IO_START, null], [LITERAL, '1234'], [IOSeparatorArrow, null], [IDENTITY, 'Alp123'], [IO_END, null]]
-//                ],
-//                [/Fixed Width Length 2/,
-//                 "[ 1234 -> Alpha 1 Bravo ]",
-//                 [[IO_START, null], [LITERAL, '1234'], [IOSeparatorArrow, null], [IDENTITY, 'Alpha 1 Bravo'], [IO_END, null]]
-//                ],
-//                [/Fixed Width Length 3/,
-//                 " [ 1234  ->\nA ] ",
-//                 [[IO_START, null], [LITERAL, '1234'], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END, null]]
-//                ],
+                [/Fixed Width Positional 2/,
+                 /[ 1 ,10 -> A B C ]/,
+                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A B C'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1'], [LITERAL, '10'],[IDENTITY, 'A B C'], ] ]
+                ],
+                [/Fixed Width Positional 3/,
+                 " [ 1 , 10  ->\nA 1 100 ] ",
+                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A 1 100'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1'], [LITERAL, '10'],[IDENTITY, 'A 1 100'], ] ]
+                ],
+                [/Fixed Width "Legal, no comma whatever" 4/,
+                 " [ 1  10  -> A 1 100 ] ",
+                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A 1 100'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1'], [LITERAL, '10'],[IDENTITY, 'A'], ] ]
+                ],
+                [/Fixed Width "Legal, (poor)" 4/,
+                 " [ 1  10  A 1 100 ] ",
+                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A 1 100'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1'], [LITERAL, '10'],[IDENTITY, 'A'], ] ]
+                ],
+
+                [/Fixed Width "Legal, (commas are so good)" 4/,
+                 " [ 1  , 10  , A 1 100 ] ",
+                 [[IO_START, null], [LITERAL, '1'], [NOP, null], [LITERAL, '10'], [IOSeparatorArrow, null], [IDENTITY, 'A 1 100'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1'], [LITERAL, '10'],[IDENTITY, 'A'], ] ]
+                ],
+
+
+                [/Fixed Width Length/,
+                 " [1234->Alp123]",
+                 [[IO_START, null], [LITERAL, '1234'], [IOSeparatorArrow, null], [IDENTITY, 'Alp123'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1234'], [IDENTITY, 'Alp123'], ] ]
+                ],
+                [/Fixed Width Length 2/,
+                 "[ 1234 -> Alpha 1 Bravo ]",
+                 [[IO_START, null], [LITERAL, '1234'], [IOSeparatorArrow, null], [IDENTITY, 'Alpha 1 Bravo'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1234'], [IDENTITY, 'Alpha 1 Bravo'], ] ]
+                ],
+                [/Fixed Width Length 3/,
+                 " [ 1234  ->\nA ] ",
+                 [[IO_START, null], [LITERAL, '1234'], [IOSeparatorArrow, null], [IDENTITY, 'A'], [IO_END, null]],
+                 [[IOOperation, [LITERAL, '1234'], [IDENTITY, 'A'], ] ]
+                ],
 //
 //
 //                [/Logic Simple/,

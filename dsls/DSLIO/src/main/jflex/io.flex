@@ -54,6 +54,7 @@ import com.buttonmash.dsl.io.*;
 %}
 
 
+
 LineTerminator = \r|\n|\r\n
 WhiteSpace = [ \t]
 AnySpace = {LineTerminator} | {WhiteSpace} | [\f]
