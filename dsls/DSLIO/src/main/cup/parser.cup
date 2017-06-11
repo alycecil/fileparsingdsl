@@ -92,8 +92,8 @@ statement ::= NOP
     | IO_START ioOperation:it IO_END {: RESULT = it; :}
 ;
 
-ioOperation ::= value:start logicFluff:fluff1 value:end logicFluff:fluff2 value:storeTo {: RESULT = new IOOperation(start,end,storeTo); :}
-    |  value:length logicFluff:fluff2 value:storeTo {: RESULT = new IOOperation(length,storeTo); :}
+ioOperation ::= value:start logicFluff:fluff1 value:end logicFluff:fluff2 value:storeTo {: RESULT = new PositionalIOOperation(start,end,storeTo); :}
+    |  value:length logicFluff:fluff2 value:storeTo {: RESULT = new LengthIOOperation(length,storeTo); :}
 ;
 
 value ::= LITERAL:it     {: RESULT = it; :}

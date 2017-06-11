@@ -30,16 +30,14 @@ import com.buttonmash.dsl.io.*;
 %function getNext
 %type Token
 
+%ignorecase
+
 %unicode
 
 %{
   private Token lastToken;
   private StringBuilder sb = new StringBuilder();
   TokenManager tokenManager = new TokenManager();
-
-  public DSLLexer(java.io.Reader in, ComplexSymbolFactory sf){
-  	this(in);
-  }
 
   private synchronized Token<LanguageDefinitions> token(LanguageDefinitions type) {
       Token t = new Token<LanguageDefinitions>(type, yytext(),yyline,yychar,yychar+yylength());
